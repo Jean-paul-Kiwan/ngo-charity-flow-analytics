@@ -1,0 +1,118 @@
+<h1>NGOs</h1>
+
+<div class="card">
+  <h2>Create NGO</h2>
+  <form id="ngoForm" class="form">
+    <input name="name" placeholder="Name (e.g., Hope Lebanon)" required />
+    <input name="country" placeholder="Country (e.g., Lebanon)" required />
+    <select name="category" required>
+      <option value="">Select category</option>
+      <option value="health">health</option>
+      <option value="education">education</option>
+      <option value="food">food</option>
+      <option value="shelter">shelter</option>
+      <option value="environment">environment</option>
+      <option value="emergency">emergency</option>
+    </select>
+    <button type="submit">Create NGO</button>
+  </form>
+</div>
+
+<div class="card">
+  <h2>Search / Filters</h2>
+  <form id="ngoFilterForm" class="form">
+    <input name="search" placeholder="Search by name (e.g., hope)" />
+    <input name="country" placeholder="Country (e.g., Lebanon)" />
+    <select name="category">
+      <option value="">Any category</option>
+      <option value="health">health</option>
+      <option value="education">education</option>
+      <option value="food">food</option>
+      <option value="shelter">shelter</option>
+      <option value="environment">environment</option>
+      <option value="emergency">emergency</option>
+    </select>
+    <select name="verified">
+      <option value="">Verified? (any)</option>
+      <option value="true">true</option>
+      <option value="false">false</option>
+    </select>
+    <button type="submit">Apply</button>
+    <button type="button" class="secondary" id="ngoClearBtn">Clear</button>
+
+  </form>
+</div>
+
+<div class="card">
+  <h2>NGO List</h2>
+  <table class="table" id="ngosTable">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Country</th>
+        <th>Category</th>
+        <th>Verified</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  </table>
+</div>
+<div id="ngoModal" class="modal hidden">
+  <div class="modal-card">
+    <div class="modal-header">
+      <h2>Edit NGO</h2>
+      <button id="closeNgoModal" class="secondary">✕</button>
+    </div>
+
+    <form id="ngoEditForm" class="form modal-form">
+      <input type="hidden" name="id" />
+
+      <label>
+        Name
+        <input name="name" placeholder="NGO name" />
+      </label>
+
+      <label>
+        Country
+        <input name="country" placeholder="Country" />
+      </label>
+
+      <label>
+        Category
+        <select name="category">
+          <option value="">(keep current)</option>
+          <option value="health">health</option>
+          <option value="education">education</option>
+          <option value="food">food</option>
+          <option value="shelter">shelter</option>
+          <option value="environment">environment</option>
+          <option value="emergency">emergency</option>
+        </select>
+      </label>
+
+      <label>
+        Verified
+        <select name="isVerified">
+          <option value="true">true</option>
+          <option value="false">false</option>
+        </select>
+      </label>
+
+      <label>
+        Tags (comma separated)
+        <input name="tags" placeholder="e.g. medical,emergency" />
+      </label>
+
+      <label>
+        Contact email
+        <input name="email" placeholder="e.g. info@ngo.org" />
+      </label>
+
+      <div class="modal-actions">
+        <button type="submit">Save Changes</button>
+        <button type="button" id="cancelNgoEdit" class="secondary">Cancel</button>
+      </div>
+    </form>
+  </div>
+</div>

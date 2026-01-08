@@ -1,0 +1,221 @@
+<h1>Donations</h1>
+
+<div class="card">
+  <div style="display:flex; gap:10px; justify-content:space-between; align-items:center; flex-wrap:wrap;">
+    <div>
+      <h2 style="margin-bottom:6px;">Donations</h2>
+      <div class="small">Create, filter, edit, delete donations. (Saved in MongoDB)</div>
+    </div>
+    <button id="openCreateDonation" type="button">➕ Add Donation</button>
+  </div>
+</div>
+
+<div class="card">
+  <h2>Filters</h2>
+  <form id="donationFilterForm" class="form">
+    <input name="ngoId" placeholder="NGO ID (optional)" />
+    <select name="status">
+      <option value="">Any status</option>
+      <option value="pending">pending</option>
+      <option value="completed">completed</option>
+      <option value="failed">failed</option>
+      <option value="refunded">refunded</option>
+    </select>
+    <select name="method">
+      <option value="">Any method</option>
+      <option value="cash">cash</option>
+      <option value="card">card</option>
+      <option value="bank_transfer">bank_transfer</option>
+      <option value="crypto">crypto</option>
+    </select>
+    <input name="minAmount" type="number" placeholder="Min amount" />
+    <input name="maxAmount" type="number" placeholder="Max amount" />
+    <select name="recurring">
+      <option value="">Recurring? (any)</option>
+      <option value="true">Yes (recurring)</option>
+      <option value="false">No (one-time)</option>
+    </select>
+    <input name="tag" placeholder="Tag (e.g., education)" />
+    <button type="submit">Apply</button>
+    <button type="button" class="secondary" id="donationClearBtn">Clear</button>
+  </form>
+</div>
+
+<div class="card">
+  <h2>Donations List</h2>
+  <div id="donationsError" class="small" style="display:none;"></div>
+  <table class="table" id="donationsTableFull">
+    <thead>
+      <tr>
+        <th>Date</th>
+        <th>Donor</th>
+        <th>Email</th>
+        <th>Amount</th>
+        <th>Method</th>
+        <th>Status</th>
+        <th>Recurring</th>
+        <th>NGO</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  </table>
+</div>
+
+<!-- ✅ Create Donation Modal -->
+<div id="donationCreateModal" class="modal hidden">
+  <div class="modal-card">
+    <div class="modal-header">
+      <h2>Create Donation</h2>
+      <button id="closeCreateDonation" class="secondary">✕</button>
+    </div>
+
+    <form id="donationCreateForm" class="form modal-form">
+      <label>
+        Donor name
+        <input name="donorName" placeholder="e.g. jean paul" required />
+      </label>
+
+      <label>
+        Donor email
+        <input name="donorEmail" placeholder="e.g. jeanpaul@example.com" required />
+      </label>
+
+      <label>
+        Amount (max 100000)
+        <input name="amount" type="number" min="1" max="100000" required />
+      </label>
+
+      <label>
+        Currency
+        <select name="currency" required>
+          <option value="USD">USD</option>
+          <option value="EUR">EUR</option>
+          <option value="LBP">LBP</option>
+        </select>
+      </label>
+
+      <label>
+        Method
+        <select name="method" required>
+          <option value="cash">cash</option>
+          <option value="card">card</option>
+          <option value="bank_transfer">bank_transfer</option>
+          <option value="crypto">crypto</option>
+        </select>
+      </label>
+
+      <label>
+        Status
+        <select name="status" required>
+          <option value="completed">completed</option>
+          <option value="pending">pending</option>
+          <option value="failed">failed</option>
+          <option value="refunded">refunded</option>
+        </select>
+      </label>
+
+      <label>
+        Recurring?
+        <select name="isRecurring" required>
+          <option value="false">No (one-time)</option>
+          <option value="true">Yes (monthly/recurring)</option>
+        </select>
+      </label>
+
+      <label>
+        Tags (comma)
+        <input name="tags" placeholder="education,winter" />
+      </label>
+
+      <label>
+        Meta source
+        <input name="metaSource" placeholder="instagram/email/walkin" />
+      </label>
+
+      <label>
+        Meta platform
+        <input name="metaPlatform" placeholder="web/offline/app" />
+      </label>
+
+      <label>
+        Meta note
+        <input name="metaNote" placeholder="note..." />
+      </label>
+
+      <label>
+        NGO
+        <select name="ngoId" id="ngoSelect" required>
+          <option value="">Loading NGOs...</option>
+        </select>
+      </label>
+
+      <div class="modal-actions">
+        <button type="submit">Create Donation</button>
+        <button type="button" id="donationCreateReset" class="secondary">Reset</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- ✅ Edit Donation Modal -->
+<div id="donationModal" class="modal hidden">
+  <div class="modal-card">
+    <div class="modal-header">
+      <h2>Edit Donation</h2>
+      <button id="closeDonationModal" class="secondary">✕</button>
+    </div>
+
+    <form id="donationEditForm" class="form modal-form">
+      <input type="hidden" name="id" />
+
+      <label>
+        Status
+        <select name="status" required>
+          <option value="pending">pending</option>
+          <option value="completed">completed</option>
+          <option value="failed">failed</option>
+          <option value="refunded">refunded</option>
+        </select>
+      </label>
+
+      <label>
+        Amount
+        <input name="amount" type="number" min="1" max="100000" required />
+      </label>
+
+      <label>
+        Method
+        <select name="method" required>
+          <option value="cash">cash</option>
+          <option value="card">card</option>
+          <option value="bank_transfer">bank_transfer</option>
+          <option value="crypto">crypto</option>
+        </select>
+      </label>
+
+      <label>
+        Recurring
+        <select name="isRecurring" required>
+          <option value="false">No (one-time)</option>
+          <option value="true">Yes (recurring)</option>
+        </select>
+      </label>
+
+      <label>
+        Tags (comma)
+        <input name="tags" placeholder="education,winter" />
+      </label>
+
+      <label>
+        Meta note
+        <input name="metaNote" placeholder="updated by admin..." />
+      </label>
+
+      <div class="modal-actions">
+        <button type="submit">Save Changes</button>
+        <button type="button" id="cancelDonationEdit" class="secondary">Cancel</button>
+      </div>
+    </form>
+  </div>
+</div>
