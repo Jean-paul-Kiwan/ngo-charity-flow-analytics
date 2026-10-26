@@ -1,0 +1,112 @@
+<h1>Analytics</h1>
+<div style="margin: 12px 0;">
+  <a class="btn" href="/donations/export/csv">⬇ Export Donations CSV</a>
+</div>
+
+<div class="grid">
+  <div class="card">
+    <h3>Total NGOs</h3>
+    <div id="aNgoCount" class="big">—</div>
+  </div>
+
+  <div class="card">
+    <h3>Total Donations (count)</h3>
+    <div id="aDonationCount" class="big">—</div>
+  </div>
+
+  <div class="card">
+    <h3>Total Donations (amount)</h3>
+    <div id="aDonationTotal" class="big">—</div>
+  </div>
+</div>
+
+<div class="card">
+  <h2>Donations by NGO</h2>
+  <table class="table" id="byNgoTable">
+    <thead>
+      <tr>
+        <th>NGO</th>
+        <th>Total Amount</th>
+        <th>Donations Count</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  </table>
+</div>
+
+<script>
+  async function loadAnalytics() {
+    try {
+      // 1️⃣ Load NGOs → build id → name map
+      const ngosRes = await fetch("/ngos");
+      const ngos = await ngosRes.json();
+
+      const ngoMap = new Map();
+      if (Array.isArray(ngos)) {
+        ngos.forEach(n => ngoMap.set(String(n._id), n.name));
+        document.getElementById("aNgoCount").textContent = ngos.length;
+      }
+
+      // 2️⃣ Load donations → totals
+      const donationsRes = await fetch("/donations");
+      const donations = await donationsRes.json();
+
+      if (Array.isArray(donations)) {
+        document.getElementById("aDonationCount").textContent = donations.length;
+
+        const totalAmount = donations.reduce(
+          (sum, d) => sum + (Number(d.amount) || 0),
+          0
+        );
+
+        document.getElementById("aDonationTotal").textContent =
+          totalAmount.toLocaleString();
+      }
+
+      // 3️⃣ Load aggregation → donations by NGO
+      const byNgoRes = await fetch("/donations/analytics/by-ngo");
+      const byNgo = await byNgoRes.json();
+
+      const tbody = document.querySelector("#byNgoTable tbody");
+      tbody.innerHTML = "";
+
+      if (Array.isArray(byNgo) && byNgo.length) {
+        byNgo.forEach(row => {
+          const tr = document.createElement("tr");
+
+          const ngoId = String(row.ngoId || row._id || "");
+          const ngoName = row.ngoName || ngoMap.get(ngoId) || "Unknown NGO";
+
+          const total = Number(
+            row.totalDonations ??
+            row.totalAmount ??
+            row.total ??
+            0
+          );
+
+          const count = Number(
+            row.count ??
+            row.totalCount ??
+            0
+          );
+
+          tr.innerHTML = `
+            <td>${ngoName}</td>
+            <td>${total.toLocaleString()}</td>
+            <td>${count}</td>
+          `;
+
+          tbody.appendChild(tr);
+        });
+      } else {
+        const tr = document.createElement("tr");
+        tr.innerHTML = `<td colspan="3">No analytics data available</td>`;
+        tbody.appendChild(tr);
+      }
+    } catch (err) {
+      console.error("❌ Analytics load error:", err);
+    }
+  }
+
+  loadAnalytics();
+</script>

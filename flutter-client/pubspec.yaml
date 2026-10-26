@@ -1,0 +1,35 @@
+name: my_app
+description: "NGO Charity Flow Analytics - Flutter App"
+publish_to: 'none'
+
+version: 1.0.0+1
+
+environment:
+  sdk: ^3.10.4
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+  # Networking
+  dio: ^5.4.0
+
+  # State management
+  provider: ^6.0.6
+
+  # Utilities
+  intl: ^0.19.0
+  url_launcher: ^6.2.5
+  fluttertoast: ^8.2.1
+
+  # iOS icons
+  cupertino_icons: ^1.0.8
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^6.0.0
+
+flutter:
+  uses-material-design: true
+    
